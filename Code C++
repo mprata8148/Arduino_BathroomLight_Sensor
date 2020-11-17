@@ -1,0 +1,92 @@
+const int Buzzer = 7;
+const int ldrPin = A0;
+const int Trig = 9; 
+const int Echo = 8;
+const int LED = 6;
+const int Button = 3;
+long Duration = 0; 
+long ldrDistance;
+void setup() {
+  pinMode(Trig,OUTPUT);
+  pinMode(Echo,INPUT);
+  pinMode(Buzzer,OUTPUT);
+  pinMode(ldrPin,INPUT);
+  pinMode(LED, OUTPUT);
+  pinMode(Button,INPUT);
+  Serial.begin(9600);
+  
+
+}
+
+long Distance_Calc(){
+  digitalWrite(Trig, LOW);
+  delayMicroseconds(2);
+  digitalWrite(Trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Trig, LOW);
+  Duration = pulseIn(Echo, HIGH);
+  long Distance =((Duration * 0.034) / 2);
+
+  return Distance;
+
+}
+long LDR_sensor(){
+  int ldrStatus = analogRead(ldrPin);
+  return ldrDistance; 
+   
+}
+
+
+void loop() {
+  long Enter = 0; 
+  long Distance_cm = Distance_Calc();
+  int ButtonValue = digitalRead(Button);
+  
+  int ldrStatus = analogRead(ldrPin);
+  Serial.println(ldrStatus);
+  Serial.println(Enter);
+ //---------------------------------------------------------------
+ 
+  while (Enter == 0) {
+    long Distance_cm = Distance_Calc();
+    Serial.println(Distance_cm);
+    if (Distance_cm <= 10) {
+      digitalWrite(LED,HIGH);
+      delay(5000);
+      digitalWrite(LED,LOW); 
+      Enter = 1;
+    }
+    else {
+      Enter = 0;
+    }
+
+//----------------------------------------------------------------
+    
+   while (Enter == 1){
+    long Distance_cm = Distance_Calc();
+    Serial.println(Distance_cm);
+    if (Distance_cm <= 10) {
+      digitalWrite(LED,HIGH);
+      delay(4000);
+      digitalWrite(LED,LOW); 
+      Enter = 2; 
+    }
+    else {
+      Enter = 1;
+    }
+   }
+
+//-----------------------------------------------------------------
+   
+  while (Enter == 2) {
+    int ldrStatus = analogRead(ldrPin);;
+    Serial.println(ldrStatus);
+    if(ldrStatus <= 950) {
+      digitalWrite(Buzzer, HIGH); 
+     }
+    else {
+      digitalWrite(Buzzer, LOW);
+    }
+  }
+}
+}
